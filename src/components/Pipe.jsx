@@ -1,8 +1,9 @@
 import React from "react";
 
-const Pipe = ({ x, gapY, gap, width }) => {
+const Pipe = ({ x, gapY, gap, width, color }) => {
   const topPipeHeight = gapY;
   const bottomPipeY = gapY + gap;
+  const pipeBackground = `linear-gradient(180deg, ${color}, ${color}cc)`;
 
   return (
     <div
@@ -20,6 +21,7 @@ const Pipe = ({ x, gapY, gap, width }) => {
           top: 0,
           width: `${width}px`,
           height: `${topPipeHeight}px`,
+          background: pipeBackground,
         }}
       />
 
@@ -31,6 +33,7 @@ const Pipe = ({ x, gapY, gap, width }) => {
           top: `${bottomPipeY}px`,
           width: `${width}px`,
           height: `calc(100% - ${bottomPipeY}px)`,
+          background: pipeBackground,
         }}
       />
     </div>
