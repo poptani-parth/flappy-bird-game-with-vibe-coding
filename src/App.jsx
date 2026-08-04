@@ -56,6 +56,8 @@ export default function App() {
   const [jumpQueued, setJumpQueued] = useState(false);
   const [countdown, setCountdown] = useState(3);
   const [soundOn, setSoundOn] = useState(true);
+  const [showSettingsDrawer, setShowSettingsDrawer] = useState(false);
+  const [showControlsDrawer, setShowControlsDrawer] = useState(false);
 
   // Persist best score to local storage
   useEffect(() => {
@@ -179,6 +181,134 @@ export default function App() {
 
   const isPlaying = gameState === 'playing';
 
+  const settingsPanel = (
+    <aside className="panel settings-panel">
+      <h2>Game Settings</h2>
+
+      <div className="setting-group">
+        <label htmlFor="bird-speed">Bird speed</label>
+        <div className="setting-row">
+          <input
+            id="bird-speed"
+            type="range"
+            min="1"
+            max="5"
+            step="0.1"
+            value={baseSpeed}
+            onChange={(event) => {
+              const value = Number(event.target.value);
+              setBaseSpeed(value);
+              if (gameState === 'playing') setSpeed(value);
+            }}
+          />
+          <span>{baseSpeed.toFixed(1)}</span>
+        </div>
+      </div>
+
+      <div className="setting-group">
+        <label htmlFor="pipe-gap">Pipe gap</label>
+        <div className="setting-row">
+          <input
+            id="pipe-gap"
+            type="range"
+            min="140"
+            max="300"
+            step="10"
+            value={pipeGap}
+            onChange={(event) => setPipeGap(Number(event.target.value))}
+          />
+          <span>{pipeGap}px</span>
+        </div>
+      </div>
+
+      <div className="setting-group">
+        <label htmlFor="bird-color">Bird color</label>
+        <input
+          id="bird-color"
+          type="color"
+          value={birdColor}
+          onChange={(event) => setBirdColor(event.target.value)}
+        />
+      </div>
+
+      <div className="setting-group">
+        <label htmlFor="pipe-color">Pipe color</label>
+        <input
+          id="pipe-color"
+          type="color"
+          value={pipeColor}
+          onChange={(event) => setPipeColor(event.target.value)}
+        />
+      </div>
+
+      <div className="setting-group">
+        <label htmlFor="game-color-top">Game area top</label>
+        <input
+          id="game-color-top"
+          type="color"
+          value={gameColorTop}
+          onChange={(event) => setGameColorTop(event.target.value)}
+        />
+      </div>
+
+      <div className="setting-group">
+        <label htmlFor="game-color-bottom">Game area bottom</label>
+        <input
+          id="game-color-bottom"
+          type="color"
+          value={gameColorBottom}
+          onChange={(event) => setGameColorBottom(event.target.value)}
+        />
+      </div>
+    </aside>
+  );
+
+  const controlsPanel = (
+    <aside className="panel controls-panel">
+      <h2>Game Controls</h2>
+
+      <div className="status-row">
+        <div className="status-card">
+          <span>Status</span>
+          <strong>{gameState === 'idle' ? 'Ready' : gameState === 'gameover' ? 'Game Over' : gameState === 'paused' ? 'Paused' : 'Playing'}</strong>
+        </div>
+        <div className="status-card">
+          <span>Score</span>
+          <strong>{score}</strong>
+        </div>
+        <div className="status-card">
+          <span>Best</span>
+          <strong>{bestScore}</strong>
+        </div>
+      </div>
+
+      <div className="control-buttons">
+        <button className="action-button" type="button" onClick={startGame}>
+          <RefreshCcw size={18} /> Restart
+        </button>
+        <button
+          className="action-button"
+          type="button"
+          onClick={() => setGameState((prev) => (prev === 'playing' ? 'paused' : 'playing'))}
+        >
+          {isPlaying ? <Pause size={18} /> : <Play size={18} />} {isPlaying ? 'Pause' : 'Resume'}
+        </button>
+        <button
+          className="action-button"
+          type="button"
+          onClick={() => setSoundOn((prev) => !prev)}
+        >
+          {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
+          {soundOn ? 'Mute' : 'Sound'}
+        </button>
+      </div>
+
+      <div className="control-note">
+        Tap the game area or press <strong>Space</strong> to flap. Settings update instantly.
+      </div>
+    </aside>
+  );
+
   return (
     <div
       className="app-shell"
@@ -188,166 +318,77 @@ export default function App() {
       }}
     >
       <div className="stage-layout">
-        <aside className="panel settings-panel">
-          <h2>Game Settings</h2>
-
-          <div className="setting-group">
-            <label htmlFor="bird-speed">Bird speed</label>
-            <div className="setting-row">
-              <input
-                id="bird-speed"
-                type="range"
-                min="1"
-                max="5"
-                step="0.1"
-                value={baseSpeed}
-                onChange={(event) => {
-                  const value = Number(event.target.value);
-                  setBaseSpeed(value);
-                  if (gameState === 'playing') setSpeed(value);
-                }}
-              />
-              <span>{baseSpeed.toFixed(1)}</span>
-            </div>
-          </div>
-
-          <div className="setting-group">
-            <label htmlFor="pipe-gap">Pipe gap</label>
-            <div className="setting-row">
-              <input
-                id="pipe-gap"
-                type="range"
-                min="140"
-                max="300"
-                step="10"
-                value={pipeGap}
-                onChange={(event) => setPipeGap(Number(event.target.value))}
-              />
-              <span>{pipeGap}px</span>
-            </div>
-          </div>
-
-          <div className="setting-group">
-            <label htmlFor="bird-color">Bird color</label>
-            <input
-              id="bird-color"
-              type="color"
-              value={birdColor}
-              onChange={(event) => setBirdColor(event.target.value)}
-            />
-          </div>
-
-          <div className="setting-group">
-            <label htmlFor="pipe-color">Pipe color</label>
-            <input
-              id="pipe-color"
-              type="color"
-              value={pipeColor}
-              onChange={(event) => setPipeColor(event.target.value)}
-            />
-          </div>
-
-          <div className="setting-group">
-            <label htmlFor="game-color-top">Game area top</label>
-            <input
-              id="game-color-top"
-              type="color"
-              value={gameColorTop}
-              onChange={(event) => setGameColorTop(event.target.value)}
-            />
-          </div>
-
-          <div className="setting-group">
-            <label htmlFor="game-color-bottom">Game area bottom</label>
-            <input
-              id="game-color-bottom"
-              type="color"
-              value={gameColorBottom}
-              onChange={(event) => setGameColorBottom(event.target.value)}
-            />
-          </div>
-        </aside>
+        {settingsPanel}
 
         <div className="game-container">
+          <div className="mobile-toolbar">
+            <button className="tool-button" type="button" onClick={() => setShowSettingsDrawer(true)}>
+              Settings
+            </button>
+            <button className="tool-button" type="button" onClick={() => setShowControlsDrawer(true)}>
+              Controls
+            </button>
+          </div>
+
           <div className="game-stage-wrapper">
-          <div
-            className="game-stage"
-            onClick={handleUserAction}
-            style={{
-              '--game-gradient-top': gameColorTop,
-              '--game-gradient-bottom': gameColorBottom,
-            }}
-          >
-            <Background speed={speed} />
-            <Bird y={bird.y} rotation={bird.rotation} state={gameState} color={birdColor} />
-            {pipes.map((pipe, index) => (
-              <Pipe
-                key={index}
-                x={pipe.x}
-                gapY={pipe.gapY}
-                gap={pipeGap}
-                width={PIPE_WIDTH}
-                color={pipeColor}
+            <div
+              className="game-stage"
+              onClick={handleUserAction}
+              style={{
+                '--game-gradient-top': gameColorTop,
+                '--game-gradient-bottom': gameColorBottom,
+              }}
+            >
+              <Background speed={speed} />
+              <Bird y={bird.y} rotation={bird.rotation} state={gameState} color={birdColor} />
+              {pipes.map((pipe, index) => (
+                <Pipe
+                  key={index}
+                  x={pipe.x}
+                  gapY={pipe.gapY}
+                  gap={pipeGap}
+                  width={PIPE_WIDTH}
+                  color={pipeColor}
+                />
+              ))}
+              <HUD
+                score={score}
+                bestScore={bestScore}
+                gameState={gameState}
+                countdown={countdown}
+                onStart={startGame}
+                onTogglePause={() => setGameState((p) => (p === 'playing' ? 'paused' : 'playing'))}
+                onToggleSound={() => setSoundOn((s) => !s)}
+                soundOn={soundOn}
               />
-            ))}
-            <HUD
-              score={score}
-              bestScore={bestScore}
-              gameState={gameState}
-              countdown={countdown}
-              onStart={startGame}
-              onTogglePause={() => setGameState((p) => (p === 'playing' ? 'paused' : 'playing'))}
-              onToggleSound={() => setSoundOn((s) => !s)}
-              soundOn={soundOn}
-            />
+            </div>
           </div>
         </div>
+
+        {controlsPanel}
       </div>
 
-      <aside className="panel controls-panel">
-        <h2>Game Controls</h2>
-
-        <div className="status-row">
-          <div className="status-card">
-            <span>Status</span>
-            <strong>{gameState === 'idle' ? 'Ready' : gameState === 'gameover' ? 'Game Over' : gameState === 'paused' ? 'Paused' : 'Playing'}</strong>
-          </div>
-          <div className="status-card">
-            <span>Score</span>
-            <strong>{score}</strong>
-          </div>
-          <div className="status-card">
-            <span>Best</span>
-            <strong>{bestScore}</strong>
+      {showSettingsDrawer && (
+        <div className="drawer-overlay" onClick={() => setShowSettingsDrawer(false)}>
+          <div className="drawer-content" onClick={(event) => event.stopPropagation()}>
+            <button className="icon-button drawer-close-button" onClick={() => setShowSettingsDrawer(false)} aria-label="Close settings">
+              ✕
+            </button>
+            {settingsPanel}
           </div>
         </div>
+      )}
 
-        <div className="control-buttons">
-          <button className="action-button" type="button" onClick={startGame}>
-            <RefreshCcw size={18} /> Restart
-          </button>
-          <button
-            className="action-button"
-            type="button"
-            onClick={() => setGameState((prev) => (prev === 'playing' ? 'paused' : 'playing'))}
-          >
-            {isPlaying ? <Pause size={18} /> : <Play size={18} />} {isPlaying ? 'Pause' : 'Resume'}
-          </button>
-          <button
-            className="action-button"
-            type="button"
-            onClick={() => setSoundOn((prev) => !prev)}
-          >
-            {soundOn ? <Volume2 size={18} /> : <VolumeX size={18} />}
-            {soundOn ? 'Mute' : 'Sound'}
-          </button>
+      {showControlsDrawer && (
+        <div className="drawer-overlay" onClick={() => setShowControlsDrawer(false)}>
+          <div className="drawer-content" onClick={(event) => event.stopPropagation()}>
+            <button className="icon-button drawer-close-button" onClick={() => setShowControlsDrawer(false)} aria-label="Close controls">
+              ✕
+            </button>
+            {controlsPanel}
+          </div>
         </div>
-
-        <div className="control-note">
-          Tap the game area or press <strong>Space</strong> to flap. Settings update instantly.
-        </div>
-      </aside>
+      )}
     </div>
-  </div>
   );
 }
