@@ -22,7 +22,8 @@ body {
   font-family: var(--primary-font);
   background: linear-gradient(180deg, #3a4a68 0%, #1a2233 100%);
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   color: #fff;
 }
 
@@ -31,15 +32,16 @@ body {
   min-height: 100vh;
   display: grid;
   place-items: center;
-  padding: 24px;
+  padding: 12px 12px 16px;
 }
 
 .stage-layout {
-  width: min(1200px, calc(100% - 48px));
+  width: min(980px, calc(100% - 20px));
   display: grid;
-  grid-template-columns: minmax(260px, 1fr) auto minmax(260px, 1fr);
-  gap: 24px;
-  align-items: start;
+  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);
+  gap: 12px;
+  align-items: center;
+  justify-items: center;
 }
 
 .game-container {
@@ -51,7 +53,7 @@ body {
   width: var(--game-width);
   height: var(--game-height);
   transform-origin: top center;
-  transform: scale(min(1, calc((100vw - 48px) / var(--game-width)), calc((100vh - 160px) / var(--game-height))));
+  transform: scale(min(1, calc((100vw - 32px) / var(--game-width)), calc((100vh - 120px) / var(--game-height))));
   max-width: 100%;
   max-height: 100%;
   margin: 0 auto;
@@ -84,17 +86,17 @@ body {
 .drawer-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(6, 12, 26, 0.82);
+  background: rgba(6, 12, 26, 0.85);
   z-index: 50;
   display: flex;
   align-items: center;
   justify-content: center;
-  padding: 24px;
+  padding: 18px;
 }
 
 .drawer-content {
-  width: min(100%, 560px);
-  max-height: calc(100vh - 64px);
+  width: min(100%, 520px);
+  max-height: calc(100vh - 52px);
   overflow: auto;
 }
 
@@ -124,10 +126,10 @@ body {
 .panel {
   background: rgba(255, 255, 255, 0.08);
   border: 1px solid rgba(255, 255, 255, 0.16);
-  border-radius: 28px;
-  padding: 24px;
+  border-radius: 22px;
+  padding: 16px;
   backdrop-filter: blur(18px);
-  box-shadow: 0 25px 60px rgba(0, 0, 0, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
 }
 
 .panel h2 {
@@ -463,6 +465,7 @@ body {
 
   .panel {
     width: 100%;
+    padding: 14px;
   }
 
   .game-container {
@@ -480,8 +483,9 @@ body {
   }
 
   .tool-button {
-    flex: 1 1 140px;
-    min-width: 140px;
+    flex: 1 1 112px;
+    min-width: 110px;
+    padding: 10px 12px;
   }
 
   .stage-layout .settings-panel,
@@ -490,21 +494,21 @@ body {
   }
 
   .game-stage-wrapper {
-    transform: scale(min(1, calc((100vw - 32px) / var(--game-width)), calc((80vh - 32px) / var(--game-height))));
+    transform: scale(min(1, calc((100vw - 20px) / var(--game-width)), calc((100vh - 90px) / var(--game-height))));
   }
 }
 
 @media (max-width: 680px) {
   .app-shell {
-    padding: 16px;
+    padding: 12px;
   }
 
   .stage-layout {
-    gap: 16px;
+    gap: 12px;
   }
 
   .panel {
-    padding: 18px;
+    padding: 16px;
   }
 
   .setting-group {
@@ -514,15 +518,30 @@ body {
   .control-buttons {
     gap: 12px;
   }
+
+  .action-button {
+    padding: 14px 20px;
+  }
+
+  .overlay-card {
+    padding: 28px;
+  }
 }
 
 @media (max-width: 480px) {
   .game-stage-wrapper {
-    transform: scale(min(1, calc(100vw / var(--game-width)), calc(75vh / var(--game-height))));
+    transform: scale(min(1, calc((100vw - 16px) / var(--game-width)), calc((100vh - 90px) / var(--game-height))));
   }
   .panel {
     border-radius: 22px;
-    padding: 16px;
+    padding: 14px;
+  }
+  .setting-group {
+    margin-bottom: 16px;
+  }
+  .tool-button {
+    min-width: 96px;
+    flex: 1 1 96px;
   }
   .control-note {
     font-size: 0.95rem;
