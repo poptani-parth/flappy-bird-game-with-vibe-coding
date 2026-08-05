@@ -22,24 +22,201 @@ body {
   font-family: var(--primary-font);
   background: linear-gradient(180deg, #3a4a68 0%, #1a2233 100%);
   min-height: 100vh;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
   color: #fff;
 }
 
 /* --- Main Game Layout --- */
 .app-shell {
   min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 12px 12px 16px;
+}
+
+.stage-layout {
+  width: 100%;
+  max-width: 980px;
   display: grid;
-  place-items: center;
+  grid-template-columns: minmax(200px, 1fr) auto minmax(200px, 1fr);
+  gap: 12px;
+  align-items: center;
+  justify-items: center;
+}
+
+.game-container {
+ display: flex;
+ justify-content: center;
+ width: 100%;
+}
+
+.game-stage-wrapper {
+  width: var(--game-width);
+  height: var(--game-height);
+  transform-origin: top center;
+  transform: scale(min(1, calc((100vw - 32px) / var(--game-width)), calc((100vh - 50px) / var(--game-height))));
+  max-width: 100%;
+  max-height: 100%;
+  margin: 0 auto;
+}
+
+.mobile-toolbar {
+  display: none;
+  justify-content: center;
+  gap: 12px;
+  margin-bottom: 20px;
+}
+
+.tool-button {
+  border: none;
+  background: rgba(255, 255, 255, 0.1);
+  color: #fff;
+  padding: 12px 18px;
+  border-radius: 16px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: transform 0.2s ease, background 0.2s ease;
+}
+
+.tool-button:hover,
+.tool-button:focus-visible {
+  background: rgba(255, 255, 255, 0.18);
+  transform: translateY(-1px);
+}
+
+.drawer-overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(6, 12, 26, 0.85);
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 18px;
+}
+
+.drawer-content {
+  width: min(100%, 520px);
+  max-height: calc(100vh - 52px);
+  overflow: auto;
+}
+
+.drawer-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 18px;
+}
+
+.drawer-header h3 {
+  margin: 0;
+  font-size: 1.5rem;
+}
+
+.drawer-overlay .icon-button {
+  width: 40px;
+  height: 40px;
+}
+
+.drawer-close-button {
+  display: block;
+  margin-left: auto;
+  margin-bottom: 18px;
+}
+
+.panel {
+  background: rgba(255, 255, 255, 0.08);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 22px;
+
   padding: 16px;
+  margin: 0 auto;
+  backdrop-filter: blur(18px);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.18);
+}
+
+.panel h2 {
+  margin-bottom: 18px;
+  font-size: 1.35rem;
+  letter-spacing: 0.01em;
+}
+
+.setting-group {
+  margin-bottom: 22px;
+}
+
+.setting-group label {
+  display: block;
+  margin-bottom: 10px;
+  opacity: 0.85;
+  font-size: 0.95rem;
+}
+
+.setting-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 12px;
+  align-items: center;
+}
+
+.panel input[type="range"] {
+  width: 100%;
+  accent-color: #67d4ff;
+}
+
+.panel input[type="color"] {
+  width: 100%;
+  height: 44px;
+  border: none;
+  border-radius: 6px;
+  padding: 0;
+  cursor: pointer;
+}
+
+.status-row {
+  display: grid;
+  gap: 14px;
+  margin-bottom: 20px;
+}
+
+.status-card {
+  background: rgba(255, 255, 255, 0.1);
+  border: 1px solid rgba(255, 255, 255, 0.16);
+  border-radius: 18px;
+  padding: 12px;
+}
+
+.status-card span {
+  display: block;
+  opacity: 0.8;
+  font-size: 0.95rem;
+}
+
+.status-card strong {
+  display: block;
+  margin-top: 2px;
+  font-size: 1.5rem;
+}
+
+.control-buttons {
+  display: grid;
+  gap: 14px;
+}
+
+.control-note {
+  margin-top: 20px;
+  opacity: 0.9;
+  line-height: 1.5;
 }
 
 .game-stage {
   position: relative;
   width: var(--game-width);
   height: var(--game-height);
-  max-width: 98vw;
-  max-height: 98vh;
   overflow: hidden;
   border-radius: 32px;
   background: linear-gradient(180deg, var(--sky-gradient-top) 0%, var(--sky-gradient-bottom) 100%);
@@ -57,7 +234,11 @@ body {
 .sky {
   position: absolute;
   inset: 0;
-  background: linear-gradient(180deg, var(--sky-gradient-top) 0%, var(--sky-gradient-bottom) 100%);
+  background: linear-gradient(
+    180deg,
+    var(--game-gradient-top, var(--sky-gradient-top)) 0%,
+    var(--game-gradient-bottom, var(--sky-gradient-bottom)) 100%
+  );
   z-index: 0;
 }
 .mountains {
@@ -283,11 +464,97 @@ body {
 }
 
 /* --- Responsive Design --- */
+@media (max-width: 1024px) {
+  .stage-layout {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .panel {
+    width: 100%;
+    padding: 14px;
+  }
+
+  .game-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+  }
+
+  .mobile-toolbar {
+    display: flex;
+    width: 100%;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  .tool-button {
+    flex: 1 1 112px;
+    min-width: 110px;
+    padding: 10px 12px;
+  }
+
+  .stage-layout .settings-panel,
+  .stage-layout .controls-panel {
+    display: none;
+  }
+
+  .game-stage-wrapper {
+    transform: scale(min(1, calc((100vw - 20px) / var(--game-width)), calc((100vh - 90px) / var(--game-height))));
+  }
+}
+
+@media (max-width: 680px) {
+  .app-shell {
+    padding: 12px;
+  }
+
+  .stage-layout {
+    gap: 12px;
+  }
+
+  .panel {
+    padding: 16px;
+  }
+
+  .setting-group {
+    margin-bottom: 18px;
+  }
+
+  .control-buttons {
+    gap: 12px;
+  }
+
+  .action-button {
+    padding: 14px 20px;
+  }
+
+  .overlay-card {
+    padding: 28px;
+  }
+}
+
 @media (max-width: 480px) {
-  .game-stage { border-radius: 0; width: 100vw; height: 100vh; max-height: 100vh; }
-  .hud-top { top: 15px; left: 15px; right: 15px; }
-  .hud-card { padding: 8px 12px; border-radius: 14px; }
-  .hud-card strong { font-size: 1.5rem; }
-  .icon-button { width: 44px; height: 44px; border-radius: 14px; }
-  .overlay-card { margin: 20px; padding: 30px; }
+  .game-stage-wrapper {
+    transform: scale(min(1, calc((100vw - 16px) / var(--game-width)), calc((100vh - 90px) / var(--game-height))));
+  }
+  .panel {
+    border-radius: 22px;
+    padding: 14px;
+  }
+  .setting-group {
+    margin-bottom: 16px;
+  }
+  .tool-button {
+    min-width: 96px;
+    flex: 1 1 96px;
+  }
+  .control-note {
+    font-size: 0.95rem;
+  }
+  .overlay-card {
+    margin: 16px;
+    padding: 24px;
+  }
 }

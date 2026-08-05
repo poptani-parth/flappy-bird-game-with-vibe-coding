@@ -39,6 +39,17 @@ const HUD = ({
       );
     }
 
+    if (gameState === 'paused') {
+      return (
+        <div className="overlay-container">
+          <div className="overlay-card">
+            <h2>Paused</h2>
+            <p>Tap the game area or press Space to resume.</p>
+          </div>
+        </div>
+      );
+    }
+
     if (gameState === 'gameover') {
       return (
         <div className="overlay-container">
@@ -60,26 +71,6 @@ const HUD = ({
 
   return (
     <div className="hud">
-      {/* Top Bar HUD */}
-      {gameState === 'playing' || gameState === 'paused' ? (
-        <div className="hud-top">
-          <div className="hud-card">
-            <span>Score</span>
-            <strong>{animatedScore}</strong>
-          </div>
-          <div className="hud-card">
-            <span>Best</span>
-            <strong>{animatedBestScore}</strong>
-          </div>
-          <button className="icon-button" onClick={onTogglePause} aria-label="Pause/Play">
-            {gameState === 'playing' ? <Pause size={24} /> : <Play size={24} />}
-          </button>
-          <button className="icon-button" onClick={onToggleSound} aria-label="Toggle Sound">
-            {soundOn ? <Volume2 size={24} /> : <VolumeX size={24} />}
-          </button>
-        </div>
-      ) : null}
-
       {/* Full-screen Overlays */}
       {renderOverlay()}
     </div>
